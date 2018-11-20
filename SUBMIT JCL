@@ -1,0 +1,9 @@
+/* rexx */                                                             
+/*                                                                   */
+/* submit d'un JOB via USS                                           */
+/*                                                                   */
+/* soumission de ce job par le deamon CRON le 15ème jours de chaque  */
+/* mois à 07h00                                                      */
+/*                                                                   */
+  call bpxwunix "submit //'AES0000.ESSAIS.REXX.STATSAS($msuc83a)'"   
+  exit 0                                                             
