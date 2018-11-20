@@ -1,0 +1,25 @@
+/* rexx */                                                      
+ parse arg directory                                            
+ sysname = mvsvar(sysname)                                      
+ if directory = '' then call sortie                             
+ call bpxwunix 'df -P 'directory'',,out.                        
+ parse var  out.2 filesystem . . . pourcentage .                
+ if filesystem = 'OUT.2' then call erreur                       
+say "               directory                 :"directory       
+say "               file system               :"filesystem      
+say "               pourcentage d'utilisation :"pourcentage     
+exit                                                            
+sortie:                                                         
+ call bpxwunix 'df -P',,out.                                    
+ do aa = 3 to out.0                                             
+ parse var  out.aa filesystem . . . pourcentage directory .     
+ if filesystem = 'OUT.'aa then call erreur                      
+say "               directory                 :"directory       
+say "               file system               :"filesystem      
+say "               pourcentage d'utilisation :"pourcentage     
+say "-----------------------------------------------------------
+ end                                                            
+exit                                                            
+erreur:                                                         
+say "filesystem not found"                                      
+exit                                                            
