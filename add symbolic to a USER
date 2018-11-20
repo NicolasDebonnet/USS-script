@@ -1,0 +1,34 @@
+/* rexx */                                                            
+/*------------------------------------------------------------------*/
+/* exécution de ce REXX dans /etc/profile                           */
+/*                                                                  */
+/* les user AD***** auront le SYMBOLIC LINK /etud au niveau de      */
+/* leur /home (/user/user/Etud)                                     */
+/*                                                                  */
+/*------------------------------------------------------------------*/
+call bpxwunix 'id',,out.                                              
+parse var out.1 '(' user ')'                                          
+if left(user,2) = 'AD' then                                           
+/* if left(user,7) = 'AESA326' then */                                
+do                                                                    
+call bpxwunix 'ls -E /user/',,list.                                   
+         do a = 0 to list.0                                           
+         parse var list.a . . . . . . . . user_mn .                   
+         user_lc = user_mn                                            
+         upper user_mn                                                
+         if user_mn = user then                                       
+               do                                                     
+               filesystem = "/user/"user_lc"/etud"                    
+               leave a                                                
+               end                                                    
+         end                                                          
+call bpxwunix 'ls -E /user/'user_lc'/',,verif.                        
+do a = 1 to verif.0                                                   
+parse var verif.a . . . . . . . . . . file                            
+ if file = '/C84C/etud' then call sortie                              
+end                                                                   
+call bpxwunix 'ln -s /C84C/etud 'filesystem''                         
+end                                                                   
+exit                                                                  
+sortie:                                                               
+exit                                                                  
