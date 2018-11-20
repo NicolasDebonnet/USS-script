@@ -1,0 +1,40 @@
+/* REXX *** */                                               
+/*                                                       */  
+/* le REXX where doit avoir un paramètre en entrée.      */  
+/*  ex : where user (user = executable)                  */  
+/*                                                       */  
+/* le rexx scan les différents PATH et donne le nom du   */  
+/* PATH dans lequel se trouve l'executable               */  
+/*                                                       */  
+/*                                                       */  
+parse arg name .                                             
+If envname = '' then Do                                      
+   Say 'name not specified'                                  
+   Exit 4                                                    
+   End                                                       
+If name = '' then Do                                         
+   Say "vous devez donner le nom  d'un executable"           
+   Exit 4                                                    
+   End                                                       
+If Left(name,1) <> '/' then Do                               
+    address syscall 'pipe p.'                                
+    'whence 'name'>/dev/fd'!!p.2                             
+    address syscall 'close' p.2                              
+    address mvs 'execio * diskr' p.1 '(stem s.'              
+    If s.0 = 1 & ,                                           
+       Left(s.1,1) = '/' ! ,                                 
+       Left(s.1,1) = '.'  then ,                             
+         fname = s.1                                         
+    Else Do                                                  
+     'whence -v 'name                                        
+     Exit -1                                                 
+     End                                                     
+   End                                                       
+else fname = name                                            
+Address syscall 'realpath 'fname' rname'                     
+If retval = -1 then Do                                       
+   Say 'Unable to resolve path 'fname                        
+   Exit 8                                                    
+   End                                                       
+   Say Rname 
+exit 0    
